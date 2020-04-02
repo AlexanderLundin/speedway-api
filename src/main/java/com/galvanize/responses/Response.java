@@ -3,10 +3,6 @@ package com.galvanize.responses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.xml.ws.ResponseWrapper;
-import java.lang.reflect.Array;
 
 
 public class Response extends ResponseEntity {
