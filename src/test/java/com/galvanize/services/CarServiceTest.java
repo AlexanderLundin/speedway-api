@@ -44,6 +44,10 @@ class CarServiceTest {
         car = new Car( nickName,  Model.Ferrari,  year, status,topSpeed);
     }
 
+
+    //CREATE
+
+
     @Test
     public void saveCarTest() {
 
@@ -51,6 +55,10 @@ class CarServiceTest {
         assertEquals(car, actual);
 
     }
+
+
+    //READ
+
 
     @Test
     public void getAllCarsTest(){
@@ -70,6 +78,10 @@ class CarServiceTest {
         assertEquals(expected,actual);
     }
 
+
+    //UPDATE
+
+
     @Test
     public void updateCarNickNameTest(){
         String newNickName = "UpdatedCarDriver";
@@ -81,6 +93,10 @@ class CarServiceTest {
 
     }
 
+
+    //DELETE
+
+    
     @Test
     public void deleteCarByIdTest(){
         Car actual = carService.save(car);

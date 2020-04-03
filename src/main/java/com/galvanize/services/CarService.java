@@ -15,9 +15,17 @@ public class CarService{
         this.carRepository = carRepository;
     }
 
+
+    //CREATE
+
+
     public Car save(Car car) {
         return carRepository.save(car);
     }
+
+
+    //READ
+
 
     public List<Car> findAllCars() {
         return carRepository.findAll();
@@ -31,6 +39,10 @@ public class CarService{
         }
     }
 
+
+    //UPDATE
+
+
     public Car updateCarById(Long id, Car car) {
         if(carRepository.findById(id).isPresent()){
             carRepository.save(car);
@@ -39,6 +51,10 @@ public class CarService{
             throw new RuntimeException("Driver id not found");
         }
     }
+
+
+    //DELETE
+
 
     public void deleteCarById(Long id) {
         if(carRepository.findById(id).isPresent()){
