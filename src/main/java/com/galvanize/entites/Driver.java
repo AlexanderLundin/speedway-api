@@ -9,6 +9,7 @@ import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="drivers")
@@ -46,6 +47,12 @@ public class Driver {
     private int losses;
 
     public Driver(){}
+
+    public Driver(String firstName, Date birthDate, Car car) {
+        this.firstName = firstName;
+        this.birthDate = birthDate;
+        this.car = car;
+    }
 
     public Driver(String firstName, String lastName, Date birthDate, String nickName) {
         this.firstName = firstName;
@@ -151,5 +158,26 @@ public class Driver {
                 ", wins=" + wins +
                 ", losses=" + losses +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Driver)) return false;
+        Driver driver = (Driver) o;
+        return wins == driver.wins &&
+                losses == driver.losses &&
+                Objects.equals(id, driver.id) &&
+                Objects.equals(firstName, driver.firstName) &&
+                Objects.equals(lastName, driver.lastName) &&
+                Objects.equals(birthDate, driver.birthDate) &&
+                Objects.equals(nickName, driver.nickName) &&
+                Objects.equals(car, driver.car) &&
+                Objects.equals(records, driver.records);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, birthDate, nickName, car, records, wins, losses);
     }
 }
