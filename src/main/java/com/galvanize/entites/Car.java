@@ -3,6 +3,7 @@ package com.galvanize.entites;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="cars")
@@ -55,6 +56,25 @@ public class Car {
                 ", status=" + status +
                 ", topSpeed=" + topSpeed +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Car)) return false;
+        Car car = (Car) o;
+        return Objects.equals(id, car.id) &&
+                Objects.equals(nickName, car.nickName) &&
+                model == car.model &&
+                Objects.equals(year, car.year) &&
+                Objects.equals(drivers, car.drivers) &&
+                status == car.status &&
+                Objects.equals(topSpeed, car.topSpeed);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nickName, model, year, drivers, status, topSpeed);
     }
 
     public Long getId() {

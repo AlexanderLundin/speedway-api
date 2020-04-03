@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -132,29 +132,30 @@ class CarControllerTest {
         assertEquals(carListInDatabase.size(), actual.size());
         //Teardown
     }
-//
-//
-//
-//    //UPDATE
-//
-//
-//    @Test
-//    public void testUpdateCarById() throws Exception {
-//        //Setup
-//        String url = "/api/cars/" + expected1.getId();
-//        //Exercise
-//        ResultActions resultActions = mvc.perform(put(url)
-//                .content(objectMapper.writeValueAsString(expected2))
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .accept(MediaType.APPLICATION_JSON_VALUE)
-//        )
-//                .andDo(print())
-//                .andExpect(status().isOk());
-//        MvcResult result = resultActions.andReturn();
-////        String contentAsString = result.getResponse().getContentAsString();
-////        Car car = objectMapper.readValue(contentAsString, Car.class);
-////        //Assert data was updated
-////        assertEquals(expected1.getNickName(), car.getNickName());
-//    }
+
+
+
+    //UPDATE
+
+
+    @Test
+    public void updateCarById_withCarInDatabase_returnsCar() throws Exception {
+        //Setup
+        Car expected = carListInDatabase.get(1);
+        expected.setNickName("New Nickname");
+        String url = "/api/cars/" + expected.getId();
+        //Exercise
+        ResultActions resultActions = mvc.perform(put(url)
+                .content(objectMapper.writeValueAsString(expected))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+        )
+                .andDo(print())
+                .andExpect(status().isOk());
+        Car car = mapResultActionsToCar(resultActions);
+        //Assert
+        assertTrue(car.equals(expected));
+        //Teardown
+    }
 
 }
