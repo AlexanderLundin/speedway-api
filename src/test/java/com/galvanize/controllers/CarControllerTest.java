@@ -27,6 +27,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -96,7 +97,7 @@ class CarControllerTest {
 
 
     @Test
-    public void testPostCar() throws Exception {
+    public void postCar_returnsCar() throws Exception {
         //Setup
         Car expected = carListInDatabase.get(1);
         String url = "/api/cars";
@@ -117,24 +118,20 @@ class CarControllerTest {
 
     //READ
 
-//
-//    @Test
-//    public void testGetAllOrders() throws Exception {
-//        //Setup
-//        String url = "/api/cars";
-//        //Exercise
-//        ResultActions resultActions = mvc.perform(get(url))
-//                .andDo(print())
-//                .andExpect(status().isOk());
-//        MvcResult result = resultActions.andReturn();
-//        String contentAsString = result.getResponse().getContentAsString();
-////        List<Car> cars = Arrays.asList(objectMapper.readValue(contentAsString, Car[].class));
-////        int actual = cars.size();
-////        int unexpected = 0;
-////        //Assert
-////        assertNotEquals(unexpected, actual);
-//        //Teardown
-//    }
+
+    @Test
+    public void getAllCars_withCarsInDatabase_returnsCarList() throws Exception {
+        //Setup
+        String url = "/api/cars";
+        //Exercise
+        ResultActions resultActions = mvc.perform(get(url))
+                .andDo(print())
+                .andExpect(status().isOk());
+        List<Car> actual = mapResultActionsToCarList(resultActions);
+        //Assert
+        assertEquals(carListInDatabase.size(), actual.size());
+        //Teardown
+    }
 //
 //
 //
