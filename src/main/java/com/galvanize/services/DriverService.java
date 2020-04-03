@@ -1,6 +1,7 @@
 package com.galvanize.services;
 
 import com.galvanize.entites.Driver;
+import com.galvanize.repository.CarRepository;
 import com.galvanize.repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,12 @@ import java.util.List;
 @Service
 public class DriverService {
 
+    
+    private DriverRepository driverRepository;
 
-    @Autowired
-    DriverRepository driverRepository;
-
+    public DriverService(DriverRepository driverRepository){
+        this.driverRepository = driverRepository;
+    }
 
     //CREATE
 
