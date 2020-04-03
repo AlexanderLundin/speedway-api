@@ -84,9 +84,9 @@ class CarServiceTest {
 
     @Test
     public void updateCarNickNameTest(){
-        String newNickName = "UpdatedCarDriver";
+        String newNickName = "Yellow Wasp";
         carService.save(car);
-        car.setNickName("Yellow Wasp");
+        car.setNickName(newNickName);
         car.setTopSpeed(212L);
         Car actual = carService.updateCarById(car.getId(),car);
         assertEquals(car.getNickName(),actual.getNickName());

@@ -15,21 +15,12 @@ import java.util.List;
 public class CarController {
 
     CarService carService;
-    Response response;
 
     public CarController(CarService carService){
         this.carService = carService;
     }
 
-    @RequestMapping("/hello")
-    public String hello(@RequestParam(required=false, defaultValue = "World") String name) {
-        if (name.equals("")){
-            name = "World";
-        }
-        return String.format("Hello %s from my first Spring Boot Application!", name);
-    }
-
-
+    
     // CREATE
 
 
@@ -38,8 +29,7 @@ public class CarController {
         car = carService.save(car);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Custom-Header", "foo");
-        Response response = new Response(car , headers, HttpStatus.OK);
-        return response;
+        return new Response(car , headers, HttpStatus.OK);
 
     }
 
@@ -51,8 +41,7 @@ public class CarController {
         List<Car> cars = carService.findAllCars();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Custom-Header", "foo");
-        Response response = new Response(cars , headers, HttpStatus.OK);
-        return response;
+        return new Response(cars , headers, HttpStatus.OK);
     }
 
     @GetMapping("/cars/{id}")
@@ -60,8 +49,7 @@ public class CarController {
         Car car = carService.findCarById(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Custom-Header", "foo");
-        Response response = new Response(car , headers, HttpStatus.OK);
-        return response;
+        return new Response(car , headers, HttpStatus.OK);
     }
 
 
@@ -73,8 +61,7 @@ public class CarController {
         car = carService.updateCarById(id, car);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Custom-Header", "foo");
-        Response response = new Response(car , headers, HttpStatus.OK);
-        return response;
+        return new Response(car , headers, HttpStatus.OK);
     }
 
 
