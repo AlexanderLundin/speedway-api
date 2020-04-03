@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "race")
@@ -127,5 +128,24 @@ public class Race {
                 ", winner=" + winner +
                 ", participants=" + participants +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Race)) return false;
+        Race race = (Race) o;
+        return Objects.equals(id, race.id) &&
+                Objects.equals(name, race.name) &&
+                raceCategory == race.raceCategory &&
+                Objects.equals(date, race.date) &&
+                Objects.equals(bestTime, race.bestTime) &&
+                Objects.equals(winner, race.winner) &&
+                Objects.equals(participants, race.participants);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, raceCategory, date, bestTime, winner, participants);
     }
 }
