@@ -1,5 +1,7 @@
 package com.galvanize.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.galvanize.entites.Car;
 import com.galvanize.entites.Model;
@@ -18,7 +20,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,25 +52,43 @@ class CarControllerTest {
     @Autowired
     CarRepository carRepository;
 
-    Car expected1;
-    Car expected2;
+    private List<Car> carListInDatabase = new ArrayList<>();
 
     @BeforeEach
     void setUp (){
         //create test cars
-        String nickName = "BatMobile";
-        Model model = Model.Ferrari;
+        ArrayList<String> nickNameList = new ArrayList<>(
+                Arrays.asList("BatMobile", "Gwagon", "Caddy", "Green Hornet", "The Black Pearl", "General Lee"));
+        ArrayList<Model> modelList = new ArrayList<>(
+                Arrays.asList(Model.Ferrari, Model.Alpine, Model.Corvette, Model.Jaguar, Model.Maserati, Model.Porsche));
         String year = "2020";
-        Status status = Status.AVAILABLE;
         long topSpeed = 200L;
-        expected1 = new Car(nickName, model, year, status, topSpeed);
-        nickName = "G Wagon";
-        model = Model.Maserati;
-        year = "2020";
-        status = Status.AVAILABLE;
-        topSpeed = 200L;
-        expected2 = new Car(nickName, model, year, status, topSpeed);
-        carRepository.save(expected1);
+        Car car;
+        for (int i = 0; i < 6 ; i++) {
+            car = new Car(nickNameList.get(i), modelList.get(i), year, Status.AVAILABLE, topSpeed);
+            carRepository.save(car);
+            carListInDatabase.add(car);
+        }
+    }
+
+
+    // Mapper helpers
+
+
+    public List<Car> mapResultActionsToCarList (ResultActions resultActions) throws UnsupportedEncodingException, JsonProcessingException {
+        MvcResult result = resultActions.andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        List<Car> carList = Arrays.asList(objectMapper.readValue(contentAsString, Car[].class));
+        return carList;
+    }
+
+    public Car mapResultActionsToCar (ResultActions resultActions) throws UnsupportedEncodingException, JsonProcessingException {
+        MvcResult result = resultActions.andReturn();
+        String json = result.getResponse().getContentAsString();
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        Car car = objectMapper.readValue(json, Car.class);
+        return car;
     }
 
 
@@ -72,68 +98,66 @@ class CarControllerTest {
     @Test
     public void testPostCar() throws Exception {
         //Setup
+        Car expected = carListInDatabase.get(1);
         String url = "/api/cars";
         //Exercise
         ResultActions resultActions = mvc.perform(post(url)
-                .content(objectMapper.writeValueAsString(expected2))
+                .content(objectMapper.writeValueAsString(expected))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
         )
                 .andDo(print())
                 .andExpect(status().isOk());
-        MvcResult result = resultActions.andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
-//        ResponseEntity response = objectMapper.readValue(contentAsString, ResponseEntity.class);
-//        Car car = (Car) response.getBody();
-//        //Assert
-//        assertEquals(expected2.getNickName(), car.getNickName());
-//        //Teardown
+        Car car = mapResultActionsToCar(resultActions);
+        //Assert
+        assertEquals(expected.getNickName(), car.getNickName());
+        //Teardown
     }
 
 
     //READ
 
-
-    @Test
-    public void testGetAllOrders() throws Exception {
-        //Setup
-        String url = "/api/cars";
-        //Exercise
-        ResultActions resultActions = mvc.perform(get(url))
-                .andDo(print())
-                .andExpect(status().isOk());
-        MvcResult result = resultActions.andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
-//        List<Car> cars = Arrays.asList(objectMapper.readValue(contentAsString, Car[].class));
-//        int actual = cars.size();
-//        int unexpected = 0;
-//        //Assert
-//        assertNotEquals(unexpected, actual);
-        //Teardown
-    }
-
-
-
-    //UPDATE
-
-
-    @Test
-    public void testUpdateCarById() throws Exception {
-        //Setup
-        String url = "/api/cars/" + expected1.getId();
-        //Exercise
-        ResultActions resultActions = mvc.perform(put(url)
-                .content(objectMapper.writeValueAsString(expected2))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-        )
-                .andDo(print())
-                .andExpect(status().isOk());
-        MvcResult result = resultActions.andReturn();
+//
+//    @Test
+//    public void testGetAllOrders() throws Exception {
+//        //Setup
+//        String url = "/api/cars";
+//        //Exercise
+//        ResultActions resultActions = mvc.perform(get(url))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//        MvcResult result = resultActions.andReturn();
 //        String contentAsString = result.getResponse().getContentAsString();
-//        Car car = objectMapper.readValue(contentAsString, Car.class);
-//        //Assert data was updated
-//        assertEquals(expected1.getNickName(), car.getNickName());
-    }
+////        List<Car> cars = Arrays.asList(objectMapper.readValue(contentAsString, Car[].class));
+////        int actual = cars.size();
+////        int unexpected = 0;
+////        //Assert
+////        assertNotEquals(unexpected, actual);
+//        //Teardown
+//    }
+//
+//
+//
+//    //UPDATE
+//
+//
+//    @Test
+//    public void testUpdateCarById() throws Exception {
+//        //Setup
+//        String url = "/api/cars/" + expected1.getId();
+//        //Exercise
+//        ResultActions resultActions = mvc.perform(put(url)
+//                .content(objectMapper.writeValueAsString(expected2))
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .accept(MediaType.APPLICATION_JSON_VALUE)
+//        )
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//        MvcResult result = resultActions.andReturn();
+////        String contentAsString = result.getResponse().getContentAsString();
+////        Car car = objectMapper.readValue(contentAsString, Car.class);
+////        //Assert data was updated
+////        assertEquals(expected1.getNickName(), car.getNickName());
+//    }
 
 }
