@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -158,4 +157,23 @@ class CarControllerTest {
         //Teardown
     }
 
+
+
+    //DELETE
+
+
+    @Test
+    public void deleteCarById_withCarInDatabase_returnsCar() throws Exception {
+        //Setup
+        Car car = new Car();
+        carService.save(car);
+        String url = "/api/cars/" + car.getId();
+        //Exercise
+        ResultActions resultActions = mvc.perform(delete(url))
+                .andDo(print())
+                .andExpect(status().isOk());
+        //Assert
+        assertThrows(RuntimeException.class, () -> carService.findCarById(car.getId()));
+        //Teardown
+    }
 }
