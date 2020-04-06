@@ -4,7 +4,6 @@ FROM openjdk:8-jdk-alpine as build
 VOLUME /tmp
 COPY . .
 RUN ./gradlew clean build
-
 # Phase 2 - Build the actual docker container with only the jar file
 FROM openjdk:8-jdk-alpine
 WORKDIR /app
@@ -13,16 +12,23 @@ COPY --from=build build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
 EXPOSE 8080
 # Build docker image
-# $ docker build -t jokeservice .
+# $ docker build -t speedway .
 #
 # Deploy joke service locally
-# $ run -p 8080:8080 jokeservice
-# should be available at http://localhost:8080/api/jokes
+# $ docker run -p 8080:8080 --rm speedway
+#
+# should be available at http://localhost:8080/api/races
+# or http://192.168.99.100:8080/api/races
+# or whever your docker is set to, use command below to see your docker ip
+# $ docker-machine ip
 #
 # Push to dockerhub
 # $ docker login
-# $ docker tag jokeservice dockerhandle/jokeservice
-# $ docker push dockerhandle/jokeservice
+# $ docker tag speedway alundin/speedway
+# $ docker push alundin/speedway
 #
 # Retrieve the image from docker hub
-# $ docker pull dockerhandle/jokeservice
+# $ docker pull alundin/speedway
+# $ docker run -p 8080:8080 --rm alundin/speedway
+# $ docker-machine ip
+# Open up brower on the ip address found from command above + ":8080/api/races"
