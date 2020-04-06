@@ -1,5 +1,22 @@
 # speedway-api
 
+# Steps to build with docker
+
+Retrieve the image from docker hub with docker toolbox or other docker CLI
+
+$ docker pull alundin/speedway
+
+$ docker run -p 8080:8080 --rm alundin/speedway
+
+$ docker-machine ip
+
+Open up brower on the ip address found from command above + ":8080/api/races"
+
+# Sample Postman Data 
+## You can import this link directly with Postman desktop app
+
+https://www.getpostman.com/collections/dafae764ccc3ed9c716e
+
 # Instructions
 Develop the app one test at a time. Always start with the simplest implementation -- just enough to make the test pass. In this way, you can thoughtfully develop the next feature and prevent getting stuck on complex things.
 
